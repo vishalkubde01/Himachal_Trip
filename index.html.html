@@ -1,0 +1,3006 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#0a0e1a" />
+    <title>Himachal Trip · Complete Offline App</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='80' font-size='80'>🏔️</text></svg>"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+      :root {
+        --gold: #d4a572;
+        --gold-light: #f4a76b;
+        --green: #4ade80;
+        --orange: #fb923c;
+        --pink: #f472b6;
+        --blue: #60a5fa;
+        --purple: #c084fc;
+        --yellow: #facc15;
+        --red: #ef4444;
+      }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+        background: linear-gradient(
+          180deg,
+          #2a1810 0%,
+          #1a1525 25%,
+          #0f1419 60%,
+          #0a0e1a 100%
+        );
+        background-attachment: fixed;
+        min-height: 100vh;
+        color: #fff;
+        padding: 16px 14px 90px;
+        padding-top: 30px;
+      }
+      .container {
+        max-width: 500px;
+        margin: 0 auto;
+      }
+      .status-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        font-size: 13px;
+        color: rgba(255, 255, 255, 0.6);
+      }
+      .offline-badge {
+        background: rgba(74, 222, 128, 0.15);
+        border: 1px solid rgba(74, 222, 128, 0.3);
+        color: var(--green);
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 10px;
+        font-weight: 700;
+      }
+      .brand {
+        color: var(--gold);
+        font-size: 11px;
+        letter-spacing: 2px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .hero-title {
+        font-size: 36px;
+        font-weight: 800;
+        line-height: 1;
+      }
+      .hero-subtitle {
+        font-size: 36px;
+        font-weight: 800;
+        line-height: 1;
+        color: var(--gold-light);
+        margin-bottom: 10px;
+      }
+      .hero-tap {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 12px;
+        margin-bottom: 20px;
+      }
+      .today-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        padding: 18px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .today-label {
+        color: var(--gold);
+        font-size: 10px;
+        letter-spacing: 2px;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      .today-date {
+        font-size: 32px;
+        font-weight: 800;
+        line-height: 1;
+      }
+      .today-day {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 13px;
+        margin-top: 4px;
+      }
+      .cal-icon {
+        background: rgba(212, 165, 114, 0.15);
+        border: 1px solid rgba(212, 165, 114, 0.3);
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+      }
+      .tabs {
+        display: flex;
+        gap: 6px;
+        margin-bottom: 20px;
+        overflow-x: auto;
+        padding-bottom: 6px;
+      }
+      .tabs::-webkit-scrollbar {
+        display: none;
+      }
+      .tab-btn {
+        padding: 9px 14px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 18px;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+      .tab-btn.active {
+        background: rgba(244, 167, 107, 0.2);
+        border-color: rgba(244, 167, 107, 0.4);
+        color: var(--gold-light);
+      }
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+        animation: fadeIn 0.3s ease;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      .section-title {
+        font-size: 22px;
+        font-weight: 800;
+        margin-bottom: 12px;
+        margin-top: 20px;
+      }
+      .section-subtitle {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 12px;
+        margin-bottom: 12px;
+        margin-top: -8px;
+      }
+      .progress-card {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 18px;
+        padding: 16px;
+        margin-bottom: 16px;
+      }
+      .progress-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .progress-title {
+        font-size: 15px;
+        font-weight: 700;
+      }
+      .progress-value {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--green);
+      }
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--green), var(--gold-light));
+        transition: width 0.4s ease;
+      }
+      .progress-text {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 12px;
+        margin-top: 8px;
+      }
+      .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 18px;
+      }
+      .stat-card {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 16px;
+        border-radius: 18px;
+        cursor: pointer;
+      }
+      .stat-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        margin-bottom: 10px;
+      }
+      .stat-icon.blue {
+        background: rgba(96, 165, 250, 0.15);
+        color: var(--blue);
+      }
+      .stat-icon.purple {
+        background: rgba(192, 132, 252, 0.15);
+        color: var(--purple);
+      }
+      .stat-icon.green {
+        background: rgba(74, 222, 128, 0.15);
+        color: var(--green);
+      }
+      .stat-icon.orange {
+        background: rgba(251, 146, 60, 0.15);
+        color: var(--orange);
+      }
+      .stat-icon.pink {
+        background: rgba(244, 114, 182, 0.15);
+        color: var(--pink);
+      }
+      .stat-icon.yellow {
+        background: rgba(250, 204, 21, 0.15);
+        color: var(--yellow);
+      }
+      .stat-icon.red {
+        background: rgba(239, 68, 68, 0.15);
+        color: var(--red);
+      }
+      .stat-value {
+        font-size: 28px;
+        font-weight: 800;
+        line-height: 1;
+        margin-bottom: 4px;
+      }
+      .stat-label {
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .stat-sublabel {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 10px;
+        letter-spacing: 1px;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-top: 2px;
+      }
+      .sheet-card {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 14px;
+        border-radius: 18px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+      }
+      .sheet-card:active {
+        transform: scale(0.98);
+      }
+      .sheet-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+      .sheet-icon.brown {
+        background: rgba(180, 120, 80, 0.2);
+        color: var(--gold);
+      }
+      .sheet-icon.blue {
+        background: rgba(96, 165, 250, 0.15);
+        color: var(--blue);
+      }
+      .sheet-icon.purple {
+        background: rgba(192, 132, 252, 0.15);
+        color: var(--purple);
+      }
+      .sheet-icon.green {
+        background: rgba(74, 222, 128, 0.15);
+        color: var(--green);
+      }
+      .sheet-icon.orange {
+        background: rgba(251, 146, 60, 0.15);
+        color: var(--orange);
+      }
+      .sheet-icon.pink {
+        background: rgba(244, 114, 182, 0.15);
+        color: var(--pink);
+      }
+      .sheet-icon.red {
+        background: rgba(239, 68, 68, 0.15);
+        color: var(--red);
+      }
+      .sheet-icon.yellow {
+        background: rgba(250, 204, 21, 0.15);
+        color: var(--yellow);
+      }
+      .sheet-content {
+        flex: 1;
+        min-width: 0;
+      }
+      .sheet-title {
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 2px;
+      }
+      .sheet-subtitle {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 11px;
+        line-height: 1.4;
+      }
+      .sheet-arrow {
+        color: rgba(255, 255, 255, 0.3);
+        font-size: 18px;
+      }
+      .checklist-group {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 18px;
+        padding: 14px;
+        margin-bottom: 12px;
+      }
+      .checklist-group.complete {
+        border-color: rgba(74, 222, 128, 0.3);
+      }
+      .checklist-group-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        cursor: pointer;
+        padding: 4px 0;
+      }
+      .checklist-group-title {
+        font-size: 15px;
+        font-weight: 700;
+        flex: 1;
+      }
+      .checklist-group-count {
+        background: rgba(244, 167, 107, 0.15);
+        color: var(--gold-light);
+        padding: 4px 10px;
+        border-radius: 10px;
+        font-size: 11px;
+        font-weight: 700;
+        margin-left: 8px;
+        flex-shrink: 0;
+      }
+      .checklist-group.complete .checklist-group-count {
+        background: rgba(74, 222, 128, 0.15);
+        color: var(--green);
+      }
+      .checklist-group-arrow {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 14px;
+        margin-left: 8px;
+        transition: transform 0.2s;
+      }
+      .checklist-group.collapsed .checklist-group-arrow {
+        transform: rotate(-90deg);
+      }
+      .checklist-items {
+        display: block;
+      }
+      .checklist-group.collapsed .checklist-items {
+        display: none;
+      }
+      .checklist-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 9px 10px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 10px;
+        margin-bottom: 5px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .checklist-item:hover {
+        background: rgba(255, 255, 255, 0.06);
+      }
+      .checklist-item.checked {
+        opacity: 0.55;
+      }
+      .checklist-item.checked .check-text {
+        text-decoration: line-through;
+      }
+      .check-box {
+        width: 22px;
+        height: 22px;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        font-size: 13px;
+        transition: all 0.2s;
+        font-weight: 700;
+      }
+      .checklist-item.checked .check-box {
+        background: var(--green);
+        border-color: var(--green);
+        color: #000;
+      }
+      .check-text {
+        font-size: 13px;
+        line-height: 1.4;
+        flex: 1;
+      }
+      .check-time {
+        color: var(--gold-light);
+        font-weight: 700;
+        font-size: 12px;
+        margin-right: 6px;
+      }
+      .check-priority {
+        background: var(--red);
+        color: #fff;
+        padding: 1px 6px;
+        border-radius: 4px;
+        font-size: 9px;
+        font-weight: 700;
+        margin-right: 6px;
+        vertical-align: middle;
+      }
+      .day-card {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        padding: 16px;
+        border-radius: 18px;
+        margin-bottom: 10px;
+        cursor: pointer;
+      }
+      .day-card.expanded {
+        background: rgba(255, 255, 255, 0.07);
+        border-color: rgba(244, 167, 107, 0.3);
+      }
+      .day-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 8px;
+      }
+      .day-number {
+        background: rgba(244, 167, 107, 0.15);
+        border: 1px solid rgba(244, 167, 107, 0.3);
+        color: var(--gold-light);
+        padding: 4px 9px;
+        border-radius: 7px;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 1px;
+      }
+      .day-date {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 11px;
+        font-weight: 600;
+      }
+      .day-title {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 5px;
+        line-height: 1.2;
+      }
+      .day-route {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 11px;
+        margin-bottom: 8px;
+      }
+      .day-progress {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .day-progress-bar {
+        flex: 1;
+        height: 5px;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 3px;
+        overflow: hidden;
+      }
+      .day-progress-fill {
+        height: 100%;
+        background: var(--green);
+        transition: width 0.3s;
+      }
+      .day-progress-text {
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.6);
+        font-weight: 600;
+      }
+      .day-tags {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+      }
+      .day-tag {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 3px 8px;
+        border-radius: 6px;
+        font-size: 10px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .day-tag.adventure {
+        background: rgba(251, 146, 60, 0.1);
+        border-color: rgba(251, 146, 60, 0.2);
+        color: var(--orange);
+      }
+      .day-tag.drive {
+        background: rgba(96, 165, 250, 0.1);
+        border-color: rgba(96, 165, 250, 0.2);
+        color: var(--blue);
+      }
+      .day-tag.scenic {
+        background: rgba(74, 222, 128, 0.1);
+        border-color: rgba(74, 222, 128, 0.2);
+        color: var(--green);
+      }
+      .day-tag.relax {
+        background: rgba(192, 132, 252, 0.1);
+        border-color: rgba(192, 132, 252, 0.2);
+        color: var(--purple);
+      }
+      .day-tag.shopping {
+        background: rgba(244, 114, 182, 0.1);
+        border-color: rgba(244, 114, 182, 0.2);
+        color: var(--pink);
+      }
+      .day-checklist {
+        display: none;
+        margin-top: 14px;
+        padding-top: 14px;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .day-card.expanded .day-checklist {
+        display: block;
+      }
+      .checklist-section {
+        margin-bottom: 12px;
+      }
+      .checklist-section-title {
+        font-size: 11px;
+        letter-spacing: 1.5px;
+        color: var(--gold-light);
+        font-weight: 700;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+      }
+      .map-card {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 18px;
+        padding: 16px;
+        margin-bottom: 14px;
+      }
+      .map-svg {
+        width: 100%;
+        height: auto;
+        background: #0d1421;
+        border-radius: 14px;
+        margin-top: 10px;
+      }
+      .map-legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 12px;
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 5px 9px;
+        border-radius: 9px;
+        font-size: 10px;
+      }
+      .legend-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+      }
+      .action-btn {
+        background: linear-gradient(135deg, var(--gold), var(--gold-light));
+        color: #2a1810;
+        border: none;
+        padding: 13px;
+        border-radius: 13px;
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+        width: 100%;
+        margin-bottom: 8px;
+      }
+      .emergency-card {
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        padding: 14px;
+        border-radius: 16px;
+        margin-bottom: 12px;
+      }
+      .emergency-title {
+        color: var(--red);
+        font-weight: 700;
+        font-size: 13px;
+        margin-bottom: 10px;
+      }
+      .emergency-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 7px 0;
+        font-size: 12px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      }
+      .emergency-row:last-child {
+        border: none;
+      }
+      .call-btn {
+        background: var(--green);
+        color: #000;
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-size: 11px;
+        font-weight: 700;
+        text-decoration: none;
+      }
+      .bottom-dock {
+        position: fixed;
+        bottom: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(20, 15, 25, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 14px;
+        padding: 6px 10px;
+        display: flex;
+        gap: 6px;
+        z-index: 100;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      }
+      .dock-btn {
+        background: transparent;
+        border: none;
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 10px;
+        padding: 5px 7px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+        border-radius: 7px;
+        font-weight: 600;
+        min-width: 50px;
+      }
+      .dock-btn.active {
+        color: var(--gold-light);
+        background: rgba(244, 167, 107, 0.1);
+      }
+      .dock-icon {
+        font-size: 16px;
+      }
+      .sos-button {
+        position: fixed;
+        bottom: 80px;
+        right: 16px;
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--red), #dc2626);
+        border: none;
+        color: #fff;
+        font-size: 11px;
+        font-weight: 800;
+        cursor: pointer;
+        box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
+        z-index: 100;
+      }
+      .info-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        background: rgba(74, 222, 128, 0.15);
+        border: 1px solid rgba(74, 222, 128, 0.3);
+        color: var(--green);
+        padding: 2px 7px;
+        border-radius: 9px;
+        font-size: 9px;
+        font-weight: 700;
+        margin-left: 6px;
+      }
+      .info-pill.warning {
+        background: rgba(251, 146, 60, 0.15);
+        border-color: rgba(251, 146, 60, 0.3);
+        color: var(--orange);
+      }
+      .info-pill.urgent {
+        background: rgba(239, 68, 68, 0.15);
+        border-color: rgba(239, 68, 68, 0.3);
+        color: var(--red);
+        animation: blink 2s infinite;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+      .input-field {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 10px;
+        color: #fff;
+        font-size: 13px;
+        font-family: inherit;
+      }
+      .input-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .reset-btn {
+        color: var(--red);
+        background: transparent;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+        padding: 8px 12px;
+        border-radius: 10px;
+        font-size: 11px;
+        cursor: pointer;
+        margin-top: 10px;
+        width: 100%;
+      }
+      .footer {
+        margin-top: 30px;
+        padding: 20px 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        text-align: center;
+      }
+      .footer-brand {
+        color: var(--gold);
+        font-size: 11px;
+        letter-spacing: 2px;
+        font-weight: 700;
+        margin-bottom: 4px;
+      }
+      .footer-info {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 11px;
+      }
+      .activity-card {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 14px;
+        padding: 12px;
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .activity-emoji {
+        width: 36px;
+        height: 36px;
+        background: rgba(255, 255, 255, 0.06);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+      }
+      .activity-info {
+        flex: 1;
+      }
+      .activity-name {
+        font-size: 13px;
+        font-weight: 700;
+        margin-bottom: 2px;
+      }
+      .activity-detail {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 11px;
+      }
+      .activity-cost {
+        color: var(--gold-light);
+        font-weight: 700;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="status-bar">
+        <div
+          id="liveClock"
+          style="font-weight: 600; font-size: 15px; color: #fff"
+        >
+          --:--
+        </div>
+        <div class="offline-badge">✈️ WORKS OFFLINE</div>
+      </div>
+
+      <div class="brand">SANTOSH FAMILY ADVENTURE</div>
+      <div class="hero-title">Himachal</div>
+      <div class="hero-subtitle">12-day trip</div>
+      <div class="hero-tap">
+        3 checklists · Maps · Budget · Emergency · 100% offline
+      </div>
+
+      <div class="today-card">
+        <div>
+          <div class="today-label">DEPARTURE</div>
+          <div class="today-date">25 May</div>
+          <div class="today-day">Sunday · 2026</div>
+        </div>
+        <div class="cal-icon">📅</div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(event, 'home')">
+          🏠 Home
+        </button>
+        <button class="tab-btn" onclick="switchTab(event, 'preTrip')">
+          📋 Pre-Trip
+        </button>
+        <button class="tab-btn" onclick="switchTab(event, 'daily')">
+          ✅ Daily
+        </button>
+        <button class="tab-btn" onclick="switchTab(event, 'packing')">
+          🎒 Packing
+        </button>
+        <button class="tab-btn" onclick="switchTab(event, 'map')">
+          🗺️ Map
+        </button>
+        <button class="tab-btn" onclick="switchTab(event, 'budget')">
+          💰 Budget
+        </button>
+        <button class="tab-btn" onclick="switchTab(event, 'sos')">
+          🆘 SOS
+        </button>
+      </div>
+
+      <div id="home" class="tab-content active">
+        <div class="section-title">Overall Progress</div>
+        <div class="progress-card">
+          <div class="progress-header">
+            <div class="progress-title">All Tasks Combined</div>
+            <div class="progress-value" id="overallPercent">0%</div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="overallFill" style="width: 0%"></div>
+          </div>
+          <div class="progress-text" id="overallText">
+            0 of 0 tasks complete
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card" onclick="switchTabById('preTrip')">
+            <div class="stat-icon red">📋</div>
+            <div class="stat-value" id="preTripStat">0/0</div>
+            <div class="stat-label">Pre-Trip</div>
+            <div class="stat-sublabel">BEFORE TRIP</div>
+          </div>
+          <div class="stat-card" onclick="switchTabById('daily')">
+            <div class="stat-icon orange">✅</div>
+            <div class="stat-value" id="dailyStat">0/0</div>
+            <div class="stat-label">Daily Tasks</div>
+            <div class="stat-sublabel">12 DAYS</div>
+          </div>
+          <div class="stat-card" onclick="switchTabById('packing')">
+            <div class="stat-icon green">🎒</div>
+            <div class="stat-value" id="packingStat">0/0</div>
+            <div class="stat-label">Packing</div>
+            <div class="stat-sublabel">LUGGAGE</div>
+          </div>
+          <div class="stat-card" onclick="switchTabById('budget')">
+            <div class="stat-icon yellow">💰</div>
+            <div class="stat-value" id="budgetStat" style="font-size: 22px">
+              ₹0
+            </div>
+            <div class="stat-label">Spent</div>
+            <div class="stat-sublabel">SO FAR</div>
+          </div>
+        </div>
+
+        <div class="section-title">Quick Access</div>
+
+        <div class="sheet-card" onclick="switchTabById('preTrip')">
+          <div class="sheet-icon red">📋</div>
+          <div class="sheet-content">
+            <div class="sheet-title">
+              Pre-Trip Checklist
+              <span class="info-pill urgent">START HERE</span>
+            </div>
+            <div class="sheet-subtitle">
+              Bookings · Car prep · Documents · 80+ tasks
+            </div>
+          </div>
+          <div class="sheet-arrow">›</div>
+        </div>
+
+        <div class="sheet-card" onclick="switchTabById('daily')">
+          <div class="sheet-icon orange">✅</div>
+          <div class="sheet-content">
+            <div class="sheet-title">
+              Daily Activity Checklist <span class="info-pill">OFFLINE</span>
+            </div>
+            <div class="sheet-subtitle">
+              12 days · 200+ tasks · Tap to expand
+            </div>
+          </div>
+          <div class="sheet-arrow">›</div>
+        </div>
+
+        <div class="sheet-card" onclick="switchTabById('packing')">
+          <div class="sheet-icon green">🎒</div>
+          <div class="sheet-content">
+            <div class="sheet-title">
+              Packing Checklist <span class="info-pill">OFFLINE</span>
+            </div>
+            <div class="sheet-subtitle">
+              130+ items · Clothes · Documents · Car kit
+            </div>
+          </div>
+          <div class="sheet-arrow">›</div>
+        </div>
+
+        <div class="sheet-card" onclick="switchTabById('map')">
+          <div class="sheet-icon blue">🗺️</div>
+          <div class="sheet-content">
+            <div class="sheet-title">
+              Route Map <span class="info-pill">OFFLINE</span>
+            </div>
+            <div class="sheet-subtitle">
+              SVG map · 6 cities · Distance guide
+            </div>
+          </div>
+          <div class="sheet-arrow">›</div>
+        </div>
+
+        <div class="sheet-card" onclick="switchTabById('budget')">
+          <div class="sheet-icon yellow">💰</div>
+          <div class="sheet-content">
+            <div class="sheet-title">Live Budget Tracker</div>
+            <div class="sheet-subtitle">Track ₹3.5L · Saved on phone</div>
+          </div>
+          <div class="sheet-arrow">›</div>
+        </div>
+
+        <div class="sheet-card" onclick="switchTabById('sos')">
+          <div class="sheet-icon red">🆘</div>
+          <div class="sheet-content">
+            <div class="sheet-title">Emergency Numbers</div>
+            <div class="sheet-subtitle">
+              Police · Hospitals · Hotels · Tap to call
+            </div>
+          </div>
+          <div class="sheet-arrow">›</div>
+        </div>
+
+        <div class="section-title">Trip Stats</div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon blue">📅</div>
+            <div class="stat-value">12</div>
+            <div class="stat-label">Days</div>
+            <div class="stat-sublabel">DURATION</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon purple">🏙️</div>
+            <div class="stat-value">6</div>
+            <div class="stat-label">Cities</div>
+            <div class="stat-sublabel">TO EXPLORE</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon orange">🎢</div>
+            <div class="stat-value">25+</div>
+            <div class="stat-label">Activities</div>
+            <div class="stat-sublabel">ADVENTURES</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon green">🚗</div>
+            <div class="stat-value">700</div>
+            <div class="stat-label">Km drive</div>
+            <div class="stat-sublabel">DISTANCE</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="preTrip" class="tab-content">
+        <div class="section-title">📋 Pre-Trip Checklist</div>
+        <div class="section-subtitle">
+          Complete these BEFORE departure on May 25
+        </div>
+
+        <div class="progress-card">
+          <div class="progress-header">
+            <div class="progress-title">Pre-Trip Progress</div>
+            <div class="progress-value" id="preTripPercent">0%</div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="preTripFill" style="width: 0%"></div>
+          </div>
+          <div class="progress-text" id="preTripText">0 of 0 tasks</div>
+        </div>
+
+        <div id="preTripList"></div>
+        <button class="reset-btn" onclick="resetSection('pre')">
+          ↻ Reset Pre-Trip Checklist
+        </button>
+      </div>
+
+      <div id="daily" class="tab-content">
+        <div class="section-title">✅ Daily Activity Checklist</div>
+        <div class="section-subtitle">
+          Tap any day to expand · Check off as you go
+        </div>
+
+        <div class="progress-card">
+          <div class="progress-header">
+            <div class="progress-title">Daily Tasks Progress</div>
+            <div class="progress-value" id="dailyPercent">0%</div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="dailyFill" style="width: 0%"></div>
+          </div>
+          <div class="progress-text" id="dailyText">0 of 0 tasks</div>
+        </div>
+
+        <div id="daysList"></div>
+      </div>
+
+      <div id="packing" class="tab-content">
+        <div class="section-title">🎒 Packing Checklist</div>
+        <div class="section-subtitle">Everything you need for 12 days</div>
+
+        <div class="progress-card">
+          <div class="progress-header">
+            <div class="progress-title">Packing Progress</div>
+            <div class="progress-value" id="packingPercent">0%</div>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="packingFill" style="width: 0%"></div>
+          </div>
+          <div class="progress-text" id="packingText">0 of 0 items</div>
+        </div>
+
+        <div id="packingList"></div>
+        <button class="reset-btn" onclick="resetSection('pack')">
+          ↻ Reset Packing Checklist
+        </button>
+      </div>
+
+      <div id="map" class="tab-content">
+        <div class="section-title">🗺️ Route Map</div>
+        <div class="section-subtitle">Offline · 12-day journey route</div>
+
+        <div class="map-card">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 8px;
+            "
+          >
+            <div style="font-size: 13px; font-weight: 700">
+              Himachal Pradesh
+            </div>
+            <div class="info-pill">SVG · OFFLINE</div>
+          </div>
+          <svg
+            class="map-svg"
+            viewBox="0 0 600 700"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <defs>
+              <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop
+                  offset="0%"
+                  style="stop-color: #1e3a5f; stop-opacity: 0.3"
+                />
+                <stop
+                  offset="100%"
+                  style="stop-color: #0d1421; stop-opacity: 1"
+                />
+              </linearGradient>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                <feMerge>
+                  <feMergeNode in="coloredBlur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+            <rect width="600" height="700" fill="url(#bgGrad)" />
+            <path
+              d="M 80 200 Q 100 180 130 175 Q 180 165 220 175 Q 280 165 340 170 Q 400 165 450 180 Q 510 195 530 240 Q 540 290 525 340 Q 510 380 480 410 Q 440 440 400 460 Q 360 480 320 490 Q 270 500 220 490 Q 170 480 130 460 Q 90 430 75 380 Q 65 320 70 270 Q 75 230 80 200 Z"
+              fill="#0f1e35"
+              stroke="#2a4a7a"
+              stroke-width="2"
+              opacity="0.6"
+            />
+            <path
+              d="M 200 250 Q 240 290 280 350 Q 320 410 380 440"
+              stroke="#1e4080"
+              stroke-width="3"
+              fill="none"
+              opacity="0.4"
+            />
+            <line
+              x1="200"
+              y1="510"
+              x2="265"
+              y2="385"
+              stroke="#f4a76b"
+              stroke-width="3"
+              stroke-dasharray="6,4"
+            />
+            <line
+              x1="265"
+              y1="385"
+              x2="320"
+              y2="245"
+              stroke="#4ade80"
+              stroke-width="4"
+              stroke-dasharray="6,4"
+            />
+            <line
+              x1="320"
+              y1="245"
+              x2="340"
+              y2="290"
+              stroke="#60a5fa"
+              stroke-width="3"
+              stroke-dasharray="6,4"
+            />
+            <line
+              x1="340"
+              y1="290"
+              x2="360"
+              y2="335"
+              stroke="#60a5fa"
+              stroke-width="3"
+              stroke-dasharray="6,4"
+            />
+            <line
+              x1="360"
+              y1="335"
+              x2="200"
+              y2="220"
+              stroke="#c084fc"
+              stroke-width="3"
+              stroke-dasharray="6,4"
+            />
+            <line
+              x1="200"
+              y1="220"
+              x2="200"
+              y2="510"
+              stroke="#f472b6"
+              stroke-width="3"
+              stroke-dasharray="6,4"
+            />
+            <circle
+              cx="200"
+              cy="510"
+              r="14"
+              fill="#fb923c"
+              filter="url(#glow)"
+              stroke="#fff"
+              stroke-width="2"
+            />
+            <text
+              x="200"
+              y="515"
+              text-anchor="middle"
+              fill="#fff"
+              font-size="10"
+              font-weight="700"
+            >
+              CH
+            </text>
+            <text
+              x="200"
+              y="545"
+              text-anchor="middle"
+              fill="#fb923c"
+              font-size="13"
+              font-weight="700"
+            >
+              Chandigarh
+            </text>
+            <text
+              x="200"
+              y="560"
+              text-anchor="middle"
+              fill="rgba(255,255,255,0.5)"
+              font-size="9"
+            >
+              Start · Finale
+            </text>
+            <circle
+              cx="265"
+              cy="385"
+              r="12"
+              fill="#f472b6"
+              filter="url(#glow)"
+              stroke="#fff"
+              stroke-width="2"
+            />
+            <text
+              x="265"
+              y="390"
+              text-anchor="middle"
+              fill="#fff"
+              font-size="9"
+              font-weight="700"
+            >
+              SH
+            </text>
+            <text
+              x="265"
+              y="365"
+              text-anchor="middle"
+              fill="#f472b6"
+              font-size="13"
+              font-weight="700"
+            >
+              Shimla
+            </text>
+            <circle
+              cx="320"
+              cy="245"
+              r="16"
+              fill="#60a5fa"
+              filter="url(#glow)"
+              stroke="#fff"
+              stroke-width="2"
+            />
+            <text
+              x="320"
+              y="250"
+              text-anchor="middle"
+              fill="#fff"
+              font-size="10"
+              font-weight="700"
+            >
+              MN
+            </text>
+            <text
+              x="320"
+              y="220"
+              text-anchor="middle"
+              fill="#60a5fa"
+              font-size="14"
+              font-weight="700"
+            >
+              Manali
+            </text>
+            <text
+              x="320"
+              y="205"
+              text-anchor="middle"
+              fill="rgba(255,255,255,0.5)"
+              font-size="9"
+            >
+              4 days
+            </text>
+            <circle
+              cx="340"
+              cy="290"
+              r="10"
+              fill="#c084fc"
+              stroke="#fff"
+              stroke-width="2"
+            />
+            <text
+              x="360"
+              y="295"
+              fill="#c084fc"
+              font-size="11"
+              font-weight="700"
+            >
+              Kullu
+            </text>
+            <circle
+              cx="360"
+              cy="335"
+              r="12"
+              fill="#4ade80"
+              filter="url(#glow)"
+              stroke="#fff"
+              stroke-width="2"
+            />
+            <text
+              x="395"
+              y="340"
+              fill="#4ade80"
+              font-size="12"
+              font-weight="700"
+            >
+              Mandi
+            </text>
+            <circle
+              cx="200"
+              cy="220"
+              r="13"
+              fill="#facc15"
+              filter="url(#glow)"
+              stroke="#fff"
+              stroke-width="2"
+            />
+            <text
+              x="200"
+              y="225"
+              text-anchor="middle"
+              fill="#fff"
+              font-size="10"
+              font-weight="700"
+            >
+              DL
+            </text>
+            <text
+              x="200"
+              y="195"
+              text-anchor="middle"
+              fill="#facc15"
+              font-size="13"
+              font-weight="700"
+            >
+              Dalhousie
+            </text>
+            <circle
+              cx="350"
+              cy="180"
+              r="8"
+              fill="#06b6d4"
+              stroke="#fff"
+              stroke-width="2"
+            />
+            <text
+              x="370"
+              y="180"
+              fill="#06b6d4"
+              font-size="10"
+              font-weight="700"
+            >
+              Sissu ★
+            </text>
+            <g transform="translate(540, 60)">
+              <circle
+                r="22"
+                fill="rgba(0,0,0,0.5)"
+                stroke="rgba(255,255,255,0.3)"
+              />
+              <text
+                y="-10"
+                text-anchor="middle"
+                fill="#fff"
+                font-size="9"
+                font-weight="700"
+              >
+                N
+              </text>
+              <polygon points="0,-16 -4,5 0,0 4,5" fill="#ef4444" />
+            </g>
+            <text
+              x="40"
+              y="50"
+              fill="rgba(255,255,255,0.6)"
+              font-size="10"
+              letter-spacing="2"
+            >
+              12-DAY HIMACHAL ROUTE
+            </text>
+          </svg>
+
+          <div class="map-legend">
+            <div class="legend-item">
+              <div class="legend-dot" style="background: #fb923c"></div>
+              Chandigarh
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background: #f472b6"></div>
+              Shimla
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background: #60a5fa"></div>
+              Manali
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background: #c084fc"></div>
+              Kullu
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background: #4ade80"></div>
+              Mandi
+            </div>
+            <div class="legend-item">
+              <div class="legend-dot" style="background: #facc15"></div>
+              Dalhousie
+            </div>
+          </div>
+        </div>
+
+        <div class="section-title">Route Distances</div>
+        <div class="sheet-card">
+          <div class="sheet-icon orange">1</div>
+          <div class="sheet-content">
+            <div class="sheet-title">Chandigarh → Shimla</div>
+            <div class="sheet-subtitle">130 km · 4-5 hours</div>
+          </div>
+        </div>
+        <div class="sheet-card">
+          <div class="sheet-icon green">2</div>
+          <div class="sheet-content">
+            <div class="sheet-title">Shimla → Manali ⭐</div>
+            <div class="sheet-subtitle">250 km · 7-8 hrs · BEST DRIVE!</div>
+          </div>
+        </div>
+        <div class="sheet-card">
+          <div class="sheet-icon blue">3</div>
+          <div class="sheet-content">
+            <div class="sheet-title">Manali → Kullu → Mandi</div>
+            <div class="sheet-subtitle">120 km · 4-5 hours</div>
+          </div>
+        </div>
+        <div class="sheet-card">
+          <div class="sheet-icon purple">4</div>
+          <div class="sheet-content">
+            <div class="sheet-title">Mandi → Dalhousie</div>
+            <div class="sheet-subtitle">150 km · 7-8 hours</div>
+          </div>
+        </div>
+        <div class="sheet-card">
+          <div class="sheet-icon pink">5</div>
+          <div class="sheet-content">
+            <div class="sheet-title">Dalhousie → Chandigarh</div>
+            <div class="sheet-subtitle">180 km · 6-7 hours</div>
+          </div>
+        </div>
+
+        <div class="section-title">📥 Offline Map Setup</div>
+        <div class="map-card">
+          <div
+            style="
+              font-size: 13px;
+              line-height: 1.6;
+              color: rgba(255, 255, 255, 0.8);
+            "
+          >
+            <strong style="color: var(--gold-light)"
+              >Do BEFORE you lose internet:</strong
+            ><br /><br />
+            <strong>Google Maps Setup:</strong><br />
+            1. Open Google Maps app<br />
+            2. Search "Chandigarh" → Profile → Offline maps<br />
+            3. Tap "Select your own map"<br />
+            4. Zoom to cover all of Himachal<br />
+            5. Download (~1-2 GB)<br /><br />
+            <strong>Areas to download:</strong><br />
+            ✓ Chandigarh + surroundings<br />
+            ✓ Shimla + Mashobra<br />
+            ✓ Mandi + Manali (large area)<br />
+            ✓ Kullu Valley<br />
+            ✓ Dalhousie + Khajjiar<br />
+            ✓ Atal Tunnel + Sissu (Lahaul)<br /><br />
+            <strong style="color: var(--gold-light)"
+              >💡 Also install Mappls (MapMyIndia) app</strong
+            >
+            - works better in mountain villages!
+          </div>
+        </div>
+      </div>
+
+      <div id="budget" class="tab-content">
+        <div class="section-title">💰 Budget Tracker</div>
+        <div class="section-subtitle">
+          Track expenses live · Saved on your phone
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon green">💰</div>
+            <div class="stat-value" style="font-size: 22px">₹3.5L</div>
+            <div class="stat-label">Budget</div>
+            <div class="stat-sublabel">TOTAL</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon orange">💸</div>
+            <div class="stat-value" style="font-size: 22px" id="spentDisplay">
+              ₹0
+            </div>
+            <div class="stat-label">Spent</div>
+            <div class="stat-sublabel">SO FAR</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon blue">💵</div>
+            <div
+              class="stat-value"
+              style="font-size: 22px"
+              id="remainingDisplay"
+            >
+              ₹3.5L
+            </div>
+            <div class="stat-label">Left</div>
+            <div class="stat-sublabel">REMAINING</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon purple">📅</div>
+            <div class="stat-value" style="font-size: 22px">₹29K</div>
+            <div class="stat-label">Per Day</div>
+            <div class="stat-sublabel">AVERAGE</div>
+          </div>
+        </div>
+
+        <div class="section-title">Add Expense</div>
+        <div class="map-card">
+          <div class="input-row">
+            <select id="expCategory" class="input-field">
+              <option value="food">🍽️ Food</option>
+              <option value="hotel">🏨 Hotel</option>
+              <option value="fuel">⛽ Fuel</option>
+              <option value="activity">🎢 Activity</option>
+              <option value="shopping">🛍️ Shopping</option>
+              <option value="toll">🛣️ Toll</option>
+              <option value="other">📦 Other</option>
+            </select>
+            <input
+              type="number"
+              id="expAmount"
+              class="input-field"
+              placeholder="Amount ₹"
+            />
+          </div>
+          <input
+            type="text"
+            id="expNote"
+            class="input-field"
+            placeholder="Note (optional)"
+            style="width: 100%; margin-bottom: 8px"
+          />
+          <button class="action-btn" onclick="addExpense()">
+            ➕ Add Expense
+          </button>
+        </div>
+
+        <div class="section-title">Recent Expenses</div>
+        <div id="expensesList"></div>
+
+        <div class="section-title">Estimated Breakdown</div>
+        <div class="map-card" style="padding: 4px 16px">
+          <div class="emergency-row">
+            <span style="color: rgba(255, 255, 255, 0.7)">✈️ Flights</span
+            ><strong>₹66,000</strong>
+          </div>
+          <div class="emergency-row">
+            <span style="color: rgba(255, 255, 255, 0.7)">🏨 Hotels</span
+            ><strong>₹1,15,000</strong>
+          </div>
+          <div class="emergency-row">
+            <span style="color: rgba(255, 255, 255, 0.7)">🎢 Activities</span
+            ><strong>₹45,000</strong>
+          </div>
+          <div class="emergency-row">
+            <span style="color: rgba(255, 255, 255, 0.7)">🍽️ Food</span
+            ><strong>₹35,000</strong>
+          </div>
+          <div class="emergency-row">
+            <span style="color: rgba(255, 255, 255, 0.7)">🚗 Fuel</span
+            ><strong>₹20,000</strong>
+          </div>
+          <div class="emergency-row">
+            <span style="color: rgba(255, 255, 255, 0.7)">🛍️ Shopping</span
+            ><strong>₹25,000</strong>
+          </div>
+          <div class="emergency-row">
+            <span style="color: rgba(255, 255, 255, 0.7)">🛡️ Misc</span
+            ><strong>₹15,000</strong>
+          </div>
+        </div>
+
+        <button class="reset-btn" onclick="resetExpenses()">
+          ↻ Clear All Expenses
+        </button>
+      </div>
+
+      <div id="sos" class="tab-content">
+        <div class="section-title">🆘 Emergency</div>
+        <div class="section-subtitle">
+          All numbers work offline · Tap to call
+        </div>
+
+        <div class="emergency-card">
+          <div class="emergency-title">🚨 National Emergency</div>
+          <div class="emergency-row">
+            <span>Police</span><a href="tel:100" class="call-btn">📞 100</a>
+          </div>
+          <div class="emergency-row">
+            <span>Fire</span><a href="tel:101" class="call-btn">📞 101</a>
+          </div>
+          <div class="emergency-row">
+            <span>Ambulance</span><a href="tel:102" class="call-btn">📞 102</a>
+          </div>
+          <div class="emergency-row">
+            <span>Disaster Helpline</span
+            ><a href="tel:108" class="call-btn">📞 108</a>
+          </div>
+          <div class="emergency-row">
+            <span>Women Helpline</span
+            ><a href="tel:1091" class="call-btn">📞 1091</a>
+          </div>
+          <div class="emergency-row">
+            <span>Child Helpline</span
+            ><a href="tel:1098" class="call-btn">📞 1098</a>
+          </div>
+          <div class="emergency-row">
+            <span>Tourist Helpline</span
+            ><a href="tel:1363" class="call-btn">📞 1363</a>
+          </div>
+          <div class="emergency-row">
+            <span>Highway Patrol</span
+            ><a href="tel:1033" class="call-btn">📞 1033</a>
+          </div>
+        </div>
+
+        <div
+          class="emergency-card"
+          style="
+            background: rgba(96, 165, 250, 0.1);
+            border-color: rgba(96, 165, 250, 0.3);
+          "
+        >
+          <div class="emergency-title" style="color: var(--blue)">
+            🏥 Hospitals by City
+          </div>
+          <div style="margin-bottom: 10px">
+            <div
+              style="
+                color: var(--blue);
+                font-weight: 700;
+                margin-bottom: 4px;
+                font-size: 12px;
+              "
+            >
+              CHANDIGARH
+            </div>
+            <div class="emergency-row">
+              <span>PGI Chandigarh</span
+              ><a href="tel:01722747585" class="call-btn">📞 Call</a>
+            </div>
+            <div class="emergency-row">
+              <span>Fortis Mohali</span
+              ><a href="tel:01725096001" class="call-btn">📞 Call</a>
+            </div>
+          </div>
+          <div style="margin-bottom: 10px">
+            <div
+              style="
+                color: var(--blue);
+                font-weight: 700;
+                margin-bottom: 4px;
+                font-size: 12px;
+              "
+            >
+              SHIMLA
+            </div>
+            <div class="emergency-row">
+              <span>IGMC Shimla</span
+              ><a href="tel:01772658957" class="call-btn">📞 Call</a>
+            </div>
+            <div class="emergency-row">
+              <span>DDU Hospital</span
+              ><a href="tel:01772654072" class="call-btn">📞 Call</a>
+            </div>
+          </div>
+          <div style="margin-bottom: 10px">
+            <div
+              style="
+                color: var(--blue);
+                font-weight: 700;
+                margin-bottom: 4px;
+                font-size: 12px;
+              "
+            >
+              MANALI
+            </div>
+            <div class="emergency-row">
+              <span>Lady Willingdon Hospital</span
+              ><a href="tel:01902252328" class="call-btn">📞 Call</a>
+            </div>
+            <div class="emergency-row">
+              <span>Mission Hospital</span
+              ><a href="tel:01902252379" class="call-btn">📞 Call</a>
+            </div>
+          </div>
+          <div style="margin-bottom: 10px">
+            <div
+              style="
+                color: var(--blue);
+                font-weight: 700;
+                margin-bottom: 4px;
+                font-size: 12px;
+              "
+            >
+              MANDI
+            </div>
+            <div class="emergency-row">
+              <span>Zonal Hospital</span
+              ><a href="tel:01905235823" class="call-btn">📞 Call</a>
+            </div>
+          </div>
+          <div>
+            <div
+              style="
+                color: var(--blue);
+                font-weight: 700;
+                margin-bottom: 4px;
+                font-size: 12px;
+              "
+            >
+              DALHOUSIE
+            </div>
+            <div class="emergency-row">
+              <span>Civil Hospital</span
+              ><a href="tel:01899242125" class="call-btn">📞 Call</a>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="emergency-card"
+          style="
+            background: rgba(74, 222, 128, 0.1);
+            border-color: rgba(74, 222, 128, 0.3);
+          "
+        >
+          <div class="emergency-title" style="color: var(--green)">
+            🏨 Hotel Contacts
+          </div>
+          <div class="emergency-row">
+            <span>Medalio Boutique (Chandigarh)</span
+            ><a href="tel:9606998448" class="call-btn">📞 Call</a>
+          </div>
+          <div class="emergency-row">
+            <span>Shimla Havens Resort</span
+            ><a href="tel:9815091066" class="call-btn">📞 Call</a>
+          </div>
+          <div
+            style="
+              padding-top: 8px;
+              color: rgba(255, 255, 255, 0.5);
+              font-size: 11px;
+            "
+          >
+            ⏳ Add other hotels after booking
+          </div>
+        </div>
+
+        <div
+          class="emergency-card"
+          style="
+            background: rgba(192, 132, 252, 0.1);
+            border-color: rgba(192, 132, 252, 0.3);
+          "
+        >
+          <div class="emergency-title" style="color: var(--purple)">
+            🚗 Roadside Help
+          </div>
+          <div class="emergency-row">
+            <span>Highway Authority</span
+            ><a href="tel:1033" class="call-btn">📞 1033</a>
+          </div>
+          <div class="emergency-row">
+            <span>Mahindra 24x7</span
+            ><a href="tel:18002096006" class="call-btn">📞 Call</a>
+          </div>
+          <div class="emergency-row">
+            <span>HP Tourism</span
+            ><a href="tel:18001808077" class="call-btn">📞 Call</a>
+          </div>
+        </div>
+
+        <div class="section-title">📋 First Aid Tips</div>
+        <div class="map-card">
+          <div style="margin-bottom: 12px">
+            <strong>🤢 Motion Sickness (child)</strong><br /><span
+              style="color: rgba(255, 255, 255, 0.6); font-size: 12px"
+              >Stop car · Fresh air · Ginger biscuits · Avoid screens</span
+            >
+          </div>
+          <div style="margin-bottom: 12px">
+            <strong>🤕 Altitude Sickness</strong><br /><span
+              style="color: rgba(255, 255, 255, 0.6); font-size: 12px"
+              >Rest · Hydrate · Descend if severe · No alcohol</span
+            >
+          </div>
+          <div style="margin-bottom: 12px">
+            <strong>🩹 Cuts & Scrapes</strong><br /><span
+              style="color: rgba(255, 255, 255, 0.6); font-size: 12px"
+              >Clean with water · Antiseptic · Cover with bandage</span
+            >
+          </div>
+          <div>
+            <strong>❄️ Cold (Sissu/Atal Tunnel)</strong><br /><span
+              style="color: rgba(255, 255, 255, 0.6); font-size: 12px"
+              >Warm clothes · Hot beverages · Indoor warmth</span
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <div class="footer-brand">SANTOSH FAMILY · OFFLINE COMPANION</div>
+        <div class="footer-info">
+          12 days · 6 cities · 100% offline · LocalStorage saved
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-dock">
+      <button class="dock-btn active" onclick="switchTabById('home')">
+        <div class="dock-icon">🏠</div>
+        <div>Home</div>
+      </button>
+      <button class="dock-btn" onclick="switchTabById('preTrip')">
+        <div class="dock-icon">📋</div>
+        <div>Pre-Trip</div>
+      </button>
+      <button class="dock-btn" onclick="switchTabById('daily')">
+        <div class="dock-icon">✅</div>
+        <div>Daily</div>
+      </button>
+      <button class="dock-btn" onclick="switchTabById('packing')">
+        <div class="dock-icon">🎒</div>
+        <div>Pack</div>
+      </button>
+      <button class="dock-btn" onclick="switchTabById('budget')">
+        <div class="dock-icon">💰</div>
+        <div>Budget</div>
+      </button>
+    </div>
+
+    <button class="sos-button" onclick="switchTabById('sos')">SOS</button>
+
+    <script>
+      // ===== DATA =====
+      const PRE_TRIP_CHECKLIST = {
+        "🔴 URGENT - This Week": [
+          {
+            p: "HIGH",
+            t: "Book Manali hotel (4 nights, May 28-June 1) - Span Resort/LaRiSa",
+          },
+          {
+            p: "HIGH",
+            t: "Book Mandi hotel (1 night, June 2) - Riverside resort",
+          },
+          {
+            p: "HIGH",
+            t: "Book Dalhousie hotel (2 nights, June 3-4) - Aamod Resort",
+          },
+          {
+            p: "HIGH",
+            t: "Book Chandigarh final night (June 5) - Near airport",
+          },
+          { p: "HIGH", t: "Book return flight (Chandigarh → Nagpur, June 6)" },
+          { p: "HIGH", t: "Buy travel insurance with adventure sports cover" },
+        ],
+        "🪂 Activity Bookings (1-2 weeks before)": [
+          { t: "Book Solang Paragliding (Thrillophilia.com)" },
+          { t: "Book Kullu River Rafting (call 9418043301)" },
+          { t: "Reserve Spa at Manali resort" },
+          { t: "Confirm ATV at Woop Park, Chandigarh" },
+          { t: "Confirm Khajjiar horse riding & zorbing" },
+        ],
+        "🚗 Z8 / Scorpio Preparation": [
+          { t: "Get pre-trip service at Mahindra service center" },
+          { t: "Check tire pressure (all 4 + spare)" },
+          { t: "Brake inspection & test drive" },
+          { t: "Top up coolant (CRITICAL for mountain driving)" },
+          { t: "Top up engine oil" },
+          { t: "Test AC system" },
+          { t: "Check all lights (headlights, brake, indicators)" },
+          { t: "Check windshield wipers" },
+          { t: "Verify spare tire condition" },
+          { t: "Pack jack, wrench, jumper cables" },
+          { t: "Check RC, insurance, PUC certificates" },
+          { t: "Fuel up COMPLETELY before mountains" },
+        ],
+        "📞 Confirmation Calls": [
+          { t: "Call Medalio Boutique - confirm late arrival May 25" },
+          { t: "Call Shimla Havens - confirm May 26 booking" },
+          { t: "Once booked: Call ALL hotels to confirm" },
+          { t: "Confirm parking available at every hotel" },
+          { t: "Request high-floor room (safer for toddler)" },
+          { t: "Request extra bed/cot for 3-year-old" },
+        ],
+        "📄 Documents (Print + Digital)": [
+          { p: "HIGH", t: "Flight e-tickets (print 2 copies)" },
+          { p: "HIGH", t: "All hotel confirmations (print + save PDF)" },
+          { p: "HIGH", t: "Travel insurance documents" },
+          { p: "HIGH", t: "Aadhaar cards (all family members)" },
+          { t: "Car documents: RC, insurance, PUC, driving license" },
+          { t: "Activity booking confirmations" },
+          { t: "Emergency contact list (handwritten backup)" },
+          { t: "Doctor prescriptions (for medicines)" },
+        ],
+        "📱 Phone & Apps Setup": [
+          { t: "Download Google Maps OFFLINE for all 6 cities" },
+          { t: "Install MapMyIndia (Mappls) app + download offline" },
+          { t: "Download Weather app (mountain weather)" },
+          { t: "Setup UPI apps + test payments" },
+          { t: "Download offline music/playlists for drives" },
+          { t: "Download Netflix shows for child entertainment" },
+          { t: "Save hotel contacts to phone" },
+          { t: "Save emergency numbers (police, hospitals)" },
+        ],
+        "💰 Money Matters": [
+          { t: "Notify HDFC Bank of travel dates" },
+          { t: "Carry ₹15,000-20,000 cash (some places no ATM)" },
+          { t: "Multiple credit/debit cards" },
+          { t: "Test UPI before trip" },
+          { t: "Keep ₹2,000 in car emergency fund" },
+        ],
+        "🏥 Health Preparation": [
+          {
+            p: "HIGH",
+            t: "Pediatric consultation - confirm child fit for hills",
+          },
+          { t: "Get all routine medications (full month supply)" },
+          { t: "Motion sickness pills (for child & adults)" },
+          { t: "Altitude sickness medication (consult doctor)" },
+          { t: "Vaccination records updated" },
+          { t: "First aid kit prepared" },
+          { t: "Buy hand sanitizers (multiple bottles)" },
+        ],
+        "🏠 Home Preparation (Day Before)": [
+          { t: "Inform office/work of leave dates" },
+          { t: "Arrange someone to check house" },
+          { t: "Forward mail to neighbor" },
+          { t: "Empty trash, unplug appliances" },
+          { t: "Check all doors/windows locked" },
+          { t: "Inform security guard" },
+          { t: "Plants watered/arrangement made" },
+        ],
+      };
+
+      const PACKING_CHECKLIST = {
+        "🧥 Adults Clothing (Each Person)": [
+          { t: "6-8 cotton t-shirts/casual shirts" },
+          { t: "3-4 warm sweaters/hoodies" },
+          { t: "1 HEAVY winter jacket (for Sissu/Atal Tunnel)" },
+          { t: "1 light rain jacket (waterproof)" },
+          { t: "3-4 jeans/trekking pants" },
+          { t: "2 thermal innerwear sets (top + bottom)" },
+          { t: "Inner garments (12-14 sets)" },
+          { t: "2 pajamas/sleepwear" },
+          { t: "1 nicer outfit for celebration dinner" },
+          { t: "Sunglasses with UV protection" },
+        ],
+        "👶 Toddler (3-year-old) - IMPORTANT": [
+          { p: "HIGH", t: "Diapers (4 packs of large size)" },
+          { p: "HIGH", t: "Wet wipes (6-8 packs)" },
+          { t: "8-10 t-shirts/onesies" },
+          { t: "3-4 warm sweaters" },
+          { t: "1 HEAVY winter jacket" },
+          { t: "6-8 pants/leggings" },
+          { t: "3 thermal innerwear sets" },
+          { t: "Socks (15+ pairs)" },
+          { t: "Comfortable shoes + slippers" },
+          { t: "Sun hat / winter cap" },
+          { t: "Mittens/gloves" },
+          { t: "Favorite blanket from home" },
+          { t: "3-4 favorite toys" },
+          { t: "Coloring books + crayons" },
+          { t: "Tablet with downloaded shows" },
+          { t: "Familiar snacks from home" },
+          { t: "Sippy cup + water bottle" },
+          { t: "Diaper rash cream" },
+          { t: "Baby sunscreen SPF 50+" },
+        ],
+        "👟 Footwear": [
+          { t: "Hiking boots/sports shoes (broken in!)" },
+          { t: "Casual walking shoes" },
+          { t: "Slippers for hotel rooms" },
+          { t: "Waterproof shoes (for snow/water)" },
+          { t: "Wool socks for cold weather" },
+        ],
+        "🛁 Toiletries": [
+          { t: "Toothbrush, toothpaste (3 sets)" },
+          { t: "Shampoo + conditioner (travel size)" },
+          { t: "Soap/body wash" },
+          { t: "Face wash + moisturizer" },
+          { t: "Deodorant" },
+          { t: "Razor + shaving kit" },
+          { t: "Sunscreen SPF 50+ (multiple bottles)" },
+          { t: "Lip balm (multiple - dry mountain air)" },
+          { t: "Hair brush/comb" },
+          { t: "Hand sanitizer (5+ bottles)" },
+          { t: "Nail clipper + scissors" },
+          { t: "Insect repellent" },
+        ],
+        "💊 Medicines & First Aid": [
+          { p: "HIGH", t: "All regular prescription medications" },
+          { p: "HIGH", t: "Paracetamol/Crocin (adult + child)" },
+          { p: "HIGH", t: "Motion sickness pills (Avomine/Dramamine)" },
+          { t: "Antiseptic cream (Betadine/Soframycin)" },
+          { t: "Band-aids (assorted sizes)" },
+          { t: "Pain relief spray (Volini)" },
+          { t: "Cough syrup (adult + child)" },
+          { t: "ORS sachets" },
+          { t: "Antacid (Eno/Pudin Hara)" },
+          { t: "Anti-diarrhea (Loperamide)" },
+          { t: "Thermometer" },
+          { t: "Cotton + gauze" },
+          { t: "Allergy medication (Cetirizine)" },
+          { t: "Vitamin C tablets" },
+        ],
+        "📱 Electronics": [
+          { p: "HIGH", t: "Phone chargers (3+ extras)" },
+          { p: "HIGH", t: "Power banks (2-3, 10000mAh+)" },
+          { t: "Charging cables (multiple types)" },
+          { t: "Car charger / multi-port" },
+          { t: "Camera + extra battery + memory cards" },
+          { t: "Earphones/headphones" },
+          { t: "Tablet/iPad with downloaded content" },
+          { t: "Universal travel adapter" },
+          { t: "Power strip/extension cord" },
+          { t: "Selfie stick" },
+          { t: "GoPro/action camera (for activities)" },
+        ],
+        "📄 Documents (Carry-On)": [
+          { p: "HIGH", t: "Flight tickets (printed + digital)" },
+          { p: "HIGH", t: "Hotel confirmations (all)" },
+          { p: "HIGH", t: "Aadhaar cards (all family)" },
+          { p: "HIGH", t: "Driving license" },
+          { p: "HIGH", t: "Insurance documents" },
+          { t: "Car documents (RC, insurance, PUC)" },
+          { t: "Activity booking vouchers" },
+          { t: "Doctor's prescriptions" },
+          { t: "Pen + small notebook" },
+          { t: "Emergency contacts list (handwritten)" },
+        ],
+        "💼 Bags": [
+          { t: "Large suitcase x2" },
+          { t: "Medium duffel bag" },
+          { t: "Carry-on backpack (essentials)" },
+          { t: "Day backpack (sightseeing)" },
+          { t: "Small toiletry bag" },
+          { t: "Laundry bag (dirty clothes)" },
+          { t: "Foldable shopping bag (for souvenirs)" },
+          { t: "Locks for suitcases" },
+          { t: "Luggage tags with contact info" },
+        ],
+        "🚗 Car Kit (for Z8/Scorpio)": [
+          { p: "HIGH", t: "Spare tire (checked)" },
+          { p: "HIGH", t: "Jack + wrench" },
+          { t: "Jumper cables" },
+          { t: "Tow rope" },
+          { t: "Emergency triangle" },
+          { t: "Tire inflator/pump" },
+          { t: "Engine oil (1L spare)" },
+          { t: "Coolant (500ml spare)" },
+          { t: "Basic tool kit" },
+          { t: "Flashlight with batteries" },
+          { t: "Window scraper (for snow)" },
+        ],
+        "🍫 Snacks for Drives": [
+          { t: "Dry fruits (almonds, walnuts)" },
+          { t: "Energy bars/protein bars" },
+          { t: "Biscuits (Parle-G for child)" },
+          { t: "Chocolates (Dairy Milk, KitKat)" },
+          { t: "Chips/namkeen" },
+          { t: "Bottled water (6-8 large)" },
+          { t: "Fruit juice tetra packs" },
+          { t: "Glucose powder/Tang" },
+          { t: "Instant tea/coffee sachets" },
+          { t: "Maggi cups (emergency)" },
+        ],
+        "🎒 Miscellaneous": [
+          { t: "Umbrella (foldable)" },
+          { t: "Hat / cap" },
+          { t: "Watch" },
+          { t: "Wallet with cash & cards" },
+          { t: "Reusable water bottle" },
+          { t: "Small thermos (for hot tea)" },
+          { t: "Plastic bags (wet clothes)" },
+          { t: "Ziploc bags (food storage)" },
+          { t: "Microfiber towel" },
+          { t: "Sewing kit (small)" },
+          { t: "Duct tape (small roll)" },
+        ],
+      };
+
+      const DAILY_TASKS = [
+        {
+          n: 1,
+          date: "25 May",
+          day: "Sunday",
+          title: "✈️ Arrive Chandigarh",
+          route: "Nagpur → Hyderabad → Chandigarh · IndiGo 6E252",
+          tags: [
+            { t: "Travel", c: "drive" },
+            { t: "Rest", c: "relax" },
+          ],
+          checks: {
+            "Morning Prep": [
+              { t: "12:30 PM", a: "Reach Nagpur airport (3 hrs early)" },
+              { t: "15:25", a: "Flight departs Nagpur" },
+              { t: "17:10", a: "Arrive Hyderabad layover" },
+              { t: "19:40", a: "Flight departs Hyderabad" },
+            ],
+            "Evening Arrival": [
+              { t: "22:15", a: "Arrive Chandigarh airport" },
+              { t: "23:00", a: "Collect luggage, exit terminal" },
+              { t: "23:30", a: "Check-in Medalio Boutique" },
+              { t: "00:00", a: "Sleep early - drive tomorrow" },
+            ],
+            Reminders: [
+              { a: "Carry toddler entertainment for flight" },
+              { a: "Medications in carry-on bag" },
+              { a: "Water bottles (fill after security)" },
+              { a: "Flight tickets & hotel confirmation printed" },
+            ],
+          },
+        },
+        {
+          n: 2,
+          date: "26 May",
+          day: "Monday",
+          title: "🚗 Chandigarh → Shimla",
+          route: "12 PM departure · 130 km · 4-5 hours",
+          tags: [
+            { t: "Drive 130km", c: "drive" },
+            { t: "Zipline", c: "adventure" },
+            { t: "ATV", c: "adventure" },
+          ],
+          checks: {
+            Morning: [
+              { t: "08:00", a: "Breakfast at hotel" },
+              { t: "10:00", a: "Quick Elante Mall shopping (winterwear)" },
+              { t: "11:30", a: "Pack Z8, fuel up COMPLETELY (60L)" },
+              { t: "12:00", a: "CHECK-OUT and depart Chandigarh" },
+            ],
+            "Afternoon Drive": [
+              { t: "12:30", a: "Timber Trail viewpoints stop" },
+              { t: "13:30", a: "Lunch at Solan café" },
+              { t: "14:30", a: "Pine forest roads near Kufri" },
+              { t: "15:30", a: "🎢 Kufri Zipline + ATV Rides" },
+              { t: "17:00", a: "Family photos at viewpoints" },
+            ],
+            Evening: [
+              { t: "18:00", a: "Arrive Shimla · Check-in Shimla Havens" },
+              { t: "19:30", a: "Mall Road walk · Local shopping" },
+              { t: "20:30", a: "Dinner · Church area photography" },
+            ],
+          },
+        },
+        {
+          n: 3,
+          date: "27 May",
+          day: "Tuesday",
+          title: "👑 Shimla Exploration",
+          route: "Jakhoo · Mashobra · Apple orchards · Heritage",
+          tags: [
+            { t: "Sightseeing", c: "scenic" },
+            { t: "Shopping", c: "shopping" },
+            { t: "Cafés", c: "relax" },
+          ],
+          checks: {
+            Morning: [
+              { t: "08:30", a: "Breakfast (try Bun Samosa!)" },
+              { t: "09:30", a: "🏯 Jakhoo Temple (via ropeway)" },
+              { t: "11:00", a: "Kufri viewpoint" },
+              { t: "12:00", a: "Coffee break at Mall Road café" },
+            ],
+            Afternoon: [
+              { t: "13:00", a: "Lunch at Mashobra café" },
+              { t: "14:30", a: "Apple orchard road drive" },
+              { t: "15:30", a: "Forest drives in Naldehra" },
+              { t: "16:30", a: "Café hopping on Mall Road" },
+            ],
+            Shopping: [
+              { a: "🧢 Himachali caps" },
+              { a: "🧥 Woolens for child" },
+              { a: "🪵 Wooden handicrafts" },
+              { a: "☕ Try local Siddu" },
+            ],
+            Evening: [
+              { t: "19:00", a: "Dinner at premium restaurant" },
+              { t: "21:00", a: "Pack for early morning drive" },
+              { t: "21:30", a: "Sleep by 10 PM - 6 AM start!" },
+            ],
+          },
+        },
+        {
+          n: 4,
+          date: "28 May",
+          day: "Wednesday",
+          title: "🌅 Shimla → Manali EPIC DRIVE",
+          route: "250 km · 7-8 hrs · Via Narkanda · SCENIC HIGHLIGHT",
+          tags: [
+            { t: "Drive 250km", c: "drive" },
+            { t: "Best Drive!", c: "scenic" },
+            { t: "Bonfire", c: "relax" },
+          ],
+          checks: {
+            "Early Morning (Critical!)": [
+              { t: "06:00", a: "WAKE UP EARLY" },
+              { t: "06:30", a: "Light breakfast" },
+              { t: "07:00", a: "CHECK-OUT and DEPART Shimla" },
+            ],
+            "Day Drive": [
+              { t: "09:30", a: "🍳 Breakfast at Narkanda (views!)" },
+              { t: "11:00", a: "Continue through forest roads" },
+              { t: "12:30", a: "🍽️ River-side lunch near Mandi" },
+              { t: "14:00", a: "Beas river valley driving" },
+              { t: "15:30", a: "Cloud-covered roads + waterfalls" },
+              { t: "17:00", a: "Pass Kullu (quick photo stop)" },
+            ],
+            Evening: [
+              { t: "17:30", a: "ARRIVE MANALI" },
+              { t: "18:00", a: "Check-in Premium Cottage" },
+              { t: "19:30", a: "🔥 Bonfire dinner at resort!" },
+              { t: "21:30", a: "Early sleep - more adventure tomorrow!" },
+            ],
+            "Drive Tips": [
+              { a: "Stop every 1-2 hrs for child" },
+              { a: "Keep water + snacks accessible" },
+              { a: "Motion sickness medicine ready" },
+              { a: "NEVER drive after sunset!" },
+            ],
+          },
+        },
+        {
+          n: 5,
+          date: "29 May",
+          day: "Thursday",
+          title: "🏯 Manali Local",
+          route: "Hadimba · Old Manali · Vashisht · Cafés",
+          tags: [
+            { t: "Sightseeing", c: "scenic" },
+            { t: "Shopping", c: "shopping" },
+            { t: "Cultural", c: "relax" },
+          ],
+          checks: {
+            Morning: [
+              { t: "09:00", a: "Breakfast at resort" },
+              { t: "10:00", a: "🏯 Hadimba Temple (pine forest)" },
+              { t: "11:00", a: "🌲 Cedar forest walk" },
+              { t: "12:00", a: "Photography at temple" },
+            ],
+            Afternoon: [
+              { t: "12:30", a: "🎨 Old Manali cafés" },
+              { t: "13:30", a: "🌊 Riverside lunch" },
+              { t: "14:30", a: "💧 Vashisht Hot Springs" },
+              { t: "16:00", a: "Café hopping" },
+            ],
+            Shopping: [
+              { a: "💎 Tibetan jewelry" },
+              { a: "🧥 Korean winterwear" },
+              { a: "🎨 Handmade crafts" },
+            ],
+            Night: [
+              { t: "19:00", a: "🎵 Live music café dinner" },
+              { t: "21:00", a: "🔥 Bonfire & mountain night" },
+              { t: "22:30", a: "Sleep - early start tomorrow!" },
+            ],
+          },
+        },
+        {
+          n: 6,
+          date: "30 May",
+          day: "Friday",
+          title: "🪂 Solang Valley Peak Adventure",
+          route: "13 km · 5 adventure activities · Spa evening",
+          tags: [
+            { t: "Paragliding", c: "adventure" },
+            { t: "Ropeway", c: "adventure" },
+            { t: "5 activities", c: "adventure" },
+          ],
+          checks: {
+            "Morning (Best 8 AM - 2 PM)": [
+              { t: "07:30", a: "Early breakfast" },
+              { t: "08:00", a: "Drive to Solang Valley" },
+              { t: "08:30", a: "🪂 PARAGLIDING (book first!)" },
+              { t: "10:00", a: "🚡 Ropeway ride" },
+              { t: "11:30", a: "🏍️ ATV riding" },
+              { t: "12:30", a: "🪂 Zipline ride" },
+            ],
+            "Family Options": [
+              { a: "❄️ Snow scooter (if available)" },
+              { a: "🚠 Gondola rides (safe for child)" },
+              { a: "❄️ Snow play areas" },
+              { a: "📸 Scenic viewpoints (no rides)" },
+            ],
+            Afternoon: [
+              { t: "13:30", a: "Lunch at Solang" },
+              { t: "15:00", a: "Return to hotel" },
+              { t: "15:30", a: "💆 SPA TREATMENT" },
+              { t: "17:30", a: "Rest at resort" },
+            ],
+            Evening: [
+              { t: "19:30", a: "Dinner at hotel" },
+              { t: "21:00", a: "Sleep by 9 PM - 6 AM start for Sissu!" },
+            ],
+          },
+        },
+        {
+          n: 7,
+          date: "31 May",
+          day: "Saturday",
+          title: "✨ Atal Tunnel + Sissu MOST BEAUTIFUL!",
+          route: "Manali → Atal Tunnel → Sissu · 35 km · Glacier views",
+          tags: [
+            { t: "BEST DAY", c: "scenic" },
+            { t: "Snow views", c: "scenic" },
+            { t: "Photography", c: "scenic" },
+          ],
+          checks: {
+            "EARLY MORNING (Critical!)": [
+              { t: "05:30", a: "WAKE UP EARLY" },
+              { t: "06:00", a: "Quick breakfast" },
+              { t: "06:30", a: "Check car + WARM CLOTHES" },
+              { t: "07:00", a: "DEPART for Atal Tunnel" },
+            ],
+            "The Journey": [
+              { t: "08:30", a: "Cross Atal Tunnel (9.02 km!)" },
+              { t: "09:00", a: "Arrive Sissu" },
+              { t: "09:30", a: "🏔️ Glacier mountain views" },
+              { t: "10:30", a: "❄️ Snow walls (if available)" },
+              { t: "11:30", a: "💦 Waterfalls + valleys" },
+              { t: "12:30", a: "☕ Café hopping at Sissu" },
+            ],
+            Photography: [
+              { a: "📸 Atal Tunnel entrance" },
+              { a: "📸 Sissu lake reflections" },
+              { a: "📸 Snow patches + child" },
+              { a: "📸 Mountain panoramas" },
+            ],
+            Return: [
+              { t: "13:30", a: "Lunch with mountain backdrop" },
+              { t: "15:00", a: "Start return drive" },
+              { t: "17:00", a: "Back at hotel" },
+              { t: "18:00", a: "Hot tea + warm bath" },
+              { t: "20:00", a: "Dinner + early sleep" },
+            ],
+            "Essential Pack": [
+              { a: "🧥 HEAVY WARM JACKETS!" },
+              { a: "🧤 Gloves for child" },
+              { a: "🧦 Extra socks" },
+              { a: "☕ Thermos with hot tea" },
+            ],
+          },
+        },
+        {
+          n: 8,
+          date: "1 June",
+          day: "Sunday",
+          title: "☕ Manali RELAX Day",
+          route: "No driving · Spa · Riverside · CRITICAL REST",
+          tags: [
+            { t: "Rest Day", c: "relax" },
+            { t: "Spa", c: "relax" },
+            { t: "Shopping", c: "shopping" },
+          ],
+          checks: {
+            "Slow Morning": [
+              { t: "09:30", a: "Sleep in! Late breakfast" },
+              { t: "11:00", a: "☕ Couple café time" },
+              { t: "12:00", a: "Relax at hotel" },
+            ],
+            Afternoon: [
+              { t: "13:00", a: "Lunch at riverside café" },
+              { t: "14:00", a: "💆 SPA TREATMENT" },
+              { t: "15:30", a: "🛍️ Shopping (Naggar Road)" },
+              { t: "17:00", a: "📸 Riverside photography" },
+            ],
+            Evening: [
+              { t: "18:00", a: "Relax at luxury resort" },
+              { t: "19:30", a: "Premium dinner" },
+              { t: "21:00", a: "Pack for tomorrow" },
+              { t: "22:00", a: "Early sleep" },
+            ],
+          },
+        },
+        {
+          n: 9,
+          date: "2 June",
+          day: "Monday",
+          title: "🛍️ Manali → Kullu → Mandi",
+          route: "120 km · 4-5 hrs · Shawl factories · Pandoh Dam",
+          tags: [
+            { t: "Drive 120km", c: "drive" },
+            { t: "Shopping", c: "shopping" },
+            { t: "Lake stay", c: "relax" },
+          ],
+          checks: {
+            Morning: [
+              { t: "08:00", a: "Breakfast & check-out" },
+              { t: "09:00", a: "Depart for Kullu" },
+              { t: "10:30", a: "🧣 Kullu shawl factories" },
+              { t: "12:00", a: "🌊 Optional river rafting" },
+            ],
+            Afternoon: [
+              { t: "13:00", a: "Lunch in Kullu" },
+              { t: "14:30", a: "🏞️ Pandoh Dam stop" },
+              { t: "16:00", a: "Arrive Mandi" },
+              { t: "16:30", a: "Check-in lake resort" },
+            ],
+            Shopping: [
+              { a: "🧣 Kullu shawls (₹1,500-5,000)" },
+              { a: "🌰 Dry fruits" },
+              { a: "🧥 Pashmina" },
+              { a: "🧶 Handmade woolens" },
+            ],
+            Evening: [
+              { t: "17:30", a: "Lake-side walk" },
+              { t: "19:00", a: "Dinner with lake view" },
+              { t: "21:00", a: "Sleep early - long drive tomorrow!" },
+            ],
+          },
+        },
+        {
+          n: 10,
+          date: "3 June",
+          day: "Tuesday",
+          title: "🏔️ Mandi → Dalhousie",
+          route: "150 km · 7-8 hrs · Longest drive · Beautiful valleys",
+          tags: [
+            { t: "Drive 150km", c: "drive" },
+            { t: "Longest", c: "drive" },
+            { t: "Scenic", c: "scenic" },
+          ],
+          checks: {
+            "EARLY MORNING": [
+              { t: "06:30", a: "Early breakfast" },
+              { t: "07:00", a: "DEPART Mandi for Dalhousie" },
+            ],
+            "Day Drive": [
+              { t: "10:00", a: "🍵 Tea stall stop (views!)" },
+              { t: "11:30", a: "Continue through villages" },
+              { t: "12:30", a: "Lunch break" },
+              { t: "14:00", a: "Beautiful valleys" },
+              { t: "15:30", a: "Approach Dalhousie" },
+            ],
+            Evening: [
+              { t: "16:00", a: "ARRIVE Dalhousie" },
+              { t: "16:30", a: "Check-in Upper Bakrota cottage" },
+              { t: "18:00", a: "🌅 Sunset point visit" },
+              { t: "19:30", a: "Peaceful café dinner" },
+              { t: "20:30", a: "Colonial market walk" },
+            ],
+          },
+        },
+        {
+          n: 11,
+          date: "4 June",
+          day: "Wednesday",
+          title: "🏞️ Dalhousie + Khajjiar Mini Switzerland",
+          route: "24 km drive · Horse riding · Zorbing · Meadows",
+          tags: [
+            { t: "Mini Swiss", c: "scenic" },
+            { t: "Horse riding", c: "adventure" },
+            { t: "Zorbing", c: "adventure" },
+          ],
+          checks: {
+            Morning: [
+              { t: "08:00", a: "Breakfast at cottage" },
+              { t: "09:00", a: "Drive to Khajjiar (24 km)" },
+              { t: "10:00", a: "🌾 Khajjiar meadow exploration" },
+              { t: "10:30", a: "🌲 Forest roads photography" },
+            ],
+            Activities: [
+              { a: "🐎 Horse riding (₹500-1,000/person)" },
+              { a: "🎢 Zorbing (₹500-800/person)" },
+              { a: "⚽ Football on meadow" },
+              { a: "📸 Family photos" },
+            ],
+            Afternoon: [
+              { t: "13:00", a: "Lunch with valley views" },
+              { t: "14:30", a: "More exploration" },
+              { t: "15:30", a: "🛍️ Tibetan market shopping" },
+              { t: "17:00", a: "🌅 Sunset photography (golden hour!)" },
+            ],
+            Evening: [
+              { t: "18:30", a: "Return to Dalhousie" },
+              { t: "19:30", a: "Farewell mountain dinner" },
+              { t: "21:00", a: "Pack for return drive" },
+              { t: "22:00", a: "Early sleep" },
+            ],
+          },
+        },
+        {
+          n: 12,
+          date: "5 June",
+          day: "Thursday",
+          title: "🎊 Return + Chandigarh FINALE",
+          route: "Dalhousie → Chandigarh · 180 km · CELEBRATION!",
+          tags: [
+            { t: "Drive 180km", c: "drive" },
+            { t: "ATV Finale", c: "adventure" },
+            { t: "Celebration", c: "relax" },
+          ],
+          checks: {
+            "Early Morning": [
+              { t: "06:00", a: "Wake up early" },
+              { t: "06:30", a: "Quick breakfast" },
+              { t: "07:00", a: "DEPART Dalhousie" },
+            ],
+            "Drive Day": [
+              { t: "10:00", a: "Snack stop" },
+              { t: "11:00", a: "Continue to plains" },
+              { t: "13:00", a: "Lunch break" },
+              { t: "14:00", a: "ARRIVE Chandigarh" },
+              { t: "14:30", a: "Check-in hotel · Rest" },
+            ],
+            "FINALE EVENING": [
+              { t: "16:00", a: "Refresh and prepare" },
+              { t: "17:00", a: "🏍️ ATV BIKING at Woop Park" },
+              { t: "18:30", a: "Rest break" },
+              { t: "19:00", a: "🎮 Adventure Park (Go-karts!)" },
+              { t: "20:00", a: "Shower & dress up" },
+              { t: "20:30", a: "🎉 CELEBRATION DINNER!" },
+              { t: "22:00", a: "Pack for flight" },
+              { t: "23:00", a: "Sleep" },
+            ],
+            "June 6 Morning": [
+              { t: "07:00", a: "Wake up & breakfast" },
+              { t: "08:30", a: "Drive to airport" },
+              { t: "10:00", a: "Check-in" },
+              { t: "12:00", a: "Flight departs ✈️" },
+              { t: "17:00", a: "Arrive Nagpur HOME!" },
+            ],
+          },
+        },
+      ];
+
+      // ===== STATE =====
+      function getState() {
+        try {
+          const saved = localStorage.getItem("himachalTripData");
+          return saved ? JSON.parse(saved) : { checks: {}, expenses: [] };
+        } catch (e) {
+          return { checks: {}, expenses: [] };
+        }
+      }
+
+      function saveState(state) {
+        try {
+          localStorage.setItem("himachalTripData", JSON.stringify(state));
+        } catch (e) {
+          console.log("Storage unavailable");
+        }
+      }
+
+      let state = getState();
+
+      // ===== RENDER FUNCTIONS =====
+      function renderChecklist(data, containerId, keyPrefix) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        let html = "";
+        for (const groupName in data) {
+          const items = data[groupName];
+          let doneCount = 0;
+          items.forEach((item, idx) => {
+            const key = `${keyPrefix}_${groupName}_${idx}`;
+            if (state.checks[key]) doneCount++;
+          });
+          const isComplete = doneCount === items.length;
+
+          html += `<div class="checklist-group ${isComplete ? "complete" : ""}" id="${keyPrefix}-${groupName.replace(/[^a-zA-Z0-9]/g, "")}">`;
+          html += `<div class="checklist-group-header" onclick="toggleGroup('${keyPrefix}-${groupName.replace(/[^a-zA-Z0-9]/g, "")}', event)">`;
+          html += `<div class="checklist-group-title">${groupName}</div>`;
+          html += `<div class="checklist-group-count">${doneCount}/${items.length}</div>`;
+          html += `<div class="checklist-group-arrow">▼</div>`;
+          html += `</div><div class="checklist-items">`;
+
+          items.forEach((item, idx) => {
+            const key = `${keyPrefix}_${groupName}_${idx}`;
+            const checked = state.checks[key] ? "checked" : "";
+            const priority =
+              item.p === "HIGH"
+                ? '<span class="check-priority">URGENT</span>'
+                : "";
+            html += `<div class="checklist-item ${checked}" onclick="toggleCheck('${key}', event)">`;
+            html += `<div class="check-box">${state.checks[key] ? "✓" : ""}</div>`;
+            html += `<div class="check-text">${priority}${item.t}</div>`;
+            html += `</div>`;
+          });
+
+          html += `</div></div>`;
+        }
+        container.innerHTML = html;
+      }
+
+      function renderDays() {
+        const container = document.getElementById("daysList");
+        if (!container) return;
+
+        container.innerHTML = DAILY_TASKS.map((d) => {
+          let total = 0,
+            done = 0;
+          for (const section in d.checks) {
+            d.checks[section].forEach((item, idx) => {
+              total++;
+              if (state.checks[`d${d.n}_${section}_${idx}`]) done++;
+            });
+          }
+          const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+          const tagsHtml = d.tags
+            .map((t) => `<div class="day-tag ${t.c}">${t.t}</div>`)
+            .join("");
+
+          let checksHtml = "";
+          for (const section in d.checks) {
+            checksHtml += `<div class="checklist-section"><div class="checklist-section-title">${section}</div>`;
+            d.checks[section].forEach((item, idx) => {
+              const key = `d${d.n}_${section}_${idx}`;
+              const checked = state.checks[key] ? "checked" : "";
+              checksHtml += `<div class="checklist-item ${checked}" onclick="toggleCheck('${key}', event)">
+          <div class="check-box">${state.checks[key] ? "✓" : ""}</div>
+          <div class="check-text">${item.t ? `<span class="check-time">${item.t}</span>` : ""}${item.a}</div>
+        </div>`;
+            });
+            checksHtml += `</div>`;
+          }
+
+          return `<div class="day-card" id="day-card-${d.n}" onclick="toggleDay(${d.n}, event)">
+      <div class="day-header">
+        <div class="day-number">DAY ${d.n}</div>
+        <div class="day-date">${d.date} · ${d.day}</div>
+      </div>
+      <div class="day-title">${d.title}</div>
+      <div class="day-route">${d.route}</div>
+      <div class="day-progress">
+        <div class="day-progress-bar"><div class="day-progress-fill" style="width: ${pct}%"></div></div>
+        <div class="day-progress-text">${done}/${total}</div>
+      </div>
+      <div class="day-tags">${tagsHtml}</div>
+      <div class="day-checklist">${checksHtml}</div>
+    </div>`;
+        }).join("");
+      }
+
+      function renderExpenses() {
+        const list = document.getElementById("expensesList");
+        if (!list) return;
+        if (state.expenses.length === 0) {
+          list.innerHTML =
+            '<div style="text-align: center; color: rgba(255,255,255,0.4); padding: 20px;">No expenses logged yet</div>';
+          return;
+        }
+        list.innerHTML = state.expenses
+          .slice()
+          .reverse()
+          .map(
+            (e, idx) => `
+    <div class="activity-card">
+      <div class="activity-emoji">${e.icon}</div>
+      <div class="activity-info">
+        <div class="activity-name">${e.note || e.category}</div>
+        <div class="activity-detail">${e.date}</div>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+        <div class="activity-cost">₹${e.amount.toLocaleString("en-IN")}</div>
+        <button onclick="deleteExpense(${state.expenses.length - 1 - idx})" style="background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: var(--red); padding: 2px 8px; border-radius: 6px; font-size: 10px; cursor: pointer;">×</button>
+      </div>
+    </div>
+  `,
+          )
+          .join("");
+      }
+
+      // ===== INTERACTIONS =====
+      function toggleDay(n, event) {
+        if (event && event.target.closest(".checklist-item")) return;
+        const card = document.getElementById(`day-card-${n}`);
+        if (card) card.classList.toggle("expanded");
+      }
+
+      function toggleGroup(id, event) {
+        if (event) event.stopPropagation();
+        const group = document.getElementById(id);
+        if (group) group.classList.toggle("collapsed");
+      }
+
+      function toggleCheck(key, event) {
+        if (event) event.stopPropagation();
+        state.checks[key] = !state.checks[key];
+        saveState(state);
+        // Re-render the section we're in
+        renderChecklist(PRE_TRIP_CHECKLIST, "preTripList", "pre");
+        renderChecklist(PACKING_CHECKLIST, "packingList", "pack");
+        renderDays();
+        updateAllProgress();
+      }
+
+      function switchTab(event, tabName) {
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((c) => c.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-btn")
+          .forEach((b) => b.classList.remove("active"));
+        document.getElementById(tabName).classList.add("active");
+        if (event && event.target) event.target.classList.add("active");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function switchTabById(tabName) {
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((c) => c.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-btn")
+          .forEach((b) => b.classList.remove("active"));
+        document.getElementById(tabName).classList.add("active");
+        const tabIds = [
+          "home",
+          "preTrip",
+          "daily",
+          "packing",
+          "map",
+          "budget",
+          "sos",
+        ];
+        const idx = tabIds.indexOf(tabName);
+        const tabs = document.querySelectorAll(".tab-btn");
+        if (idx >= 0 && tabs[idx]) tabs[idx].classList.add("active");
+
+        // Update dock
+        document
+          .querySelectorAll(".dock-btn")
+          .forEach((b) => b.classList.remove("active"));
+        const dockMap = {
+          home: 0,
+          preTrip: 1,
+          daily: 2,
+          packing: 3,
+          budget: 4,
+        };
+        const dockIdx = dockMap[tabName];
+        const dockBtns = document.querySelectorAll(".dock-btn");
+        if (dockIdx !== undefined && dockBtns[dockIdx])
+          dockBtns[dockIdx].classList.add("active");
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function addExpense() {
+        const cat = document.getElementById("expCategory").value;
+        const amt = parseFloat(document.getElementById("expAmount").value);
+        const note = document.getElementById("expNote").value;
+        if (!amt || amt <= 0) {
+          alert("Enter valid amount");
+          return;
+        }
+        const icons = {
+          food: "🍽️",
+          hotel: "🏨",
+          fuel: "⛽",
+          activity: "🎢",
+          shopping: "🛍️",
+          toll: "🛣️",
+          other: "📦",
+        };
+        state.expenses.push({
+          category: cat,
+          amount: amt,
+          note: note,
+          icon: icons[cat],
+          date: new Date().toLocaleString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        });
+        saveState(state);
+        document.getElementById("expAmount").value = "";
+        document.getElementById("expNote").value = "";
+        renderExpenses();
+        updateBudget();
+      }
+
+      function deleteExpense(idx) {
+        if (confirm("Delete this expense?")) {
+          state.expenses.splice(idx, 1);
+          saveState(state);
+          renderExpenses();
+          updateBudget();
+        }
+      }
+
+      function resetExpenses() {
+        if (confirm("Clear all expenses? This cannot be undone.")) {
+          state.expenses = [];
+          saveState(state);
+          renderExpenses();
+          updateBudget();
+        }
+      }
+
+      function resetSection(prefix) {
+        if (!confirm("Reset this checklist? All checks will be removed."))
+          return;
+        Object.keys(state.checks).forEach((k) => {
+          if (k.startsWith(prefix + "_")) delete state.checks[k];
+        });
+        saveState(state);
+        renderChecklist(PRE_TRIP_CHECKLIST, "preTripList", "pre");
+        renderChecklist(PACKING_CHECKLIST, "packingList", "pack");
+        updateAllProgress();
+      }
+
+      function updateBudget() {
+        const total = state.expenses.reduce((s, e) => s + e.amount, 0);
+        const budget = 350000;
+        const spentEl = document.getElementById("spentDisplay");
+        const remEl = document.getElementById("remainingDisplay");
+        const budgetStat = document.getElementById("budgetStat");
+        if (spentEl)
+          spentEl.textContent =
+            "₹" + (total >= 1000 ? (total / 1000).toFixed(1) + "K" : total);
+        if (remEl)
+          remEl.textContent = "₹" + ((budget - total) / 1000).toFixed(1) + "K";
+        if (budgetStat)
+          budgetStat.textContent =
+            "₹" + (total >= 1000 ? (total / 1000).toFixed(1) + "K" : total);
+      }
+
+      function countTasks(data, prefix) {
+        let total = 0,
+          done = 0;
+        for (const groupName in data) {
+          data[groupName].forEach((item, idx) => {
+            total++;
+            if (state.checks[`${prefix}_${groupName}_${idx}`]) done++;
+          });
+        }
+        return { total, done };
+      }
+
+      function countDailyTasks() {
+        let total = 0,
+          done = 0;
+        DAILY_TASKS.forEach((d) => {
+          for (const section in d.checks) {
+            d.checks[section].forEach((item, idx) => {
+              total++;
+              if (state.checks[`d${d.n}_${section}_${idx}`]) done++;
+            });
+          }
+        });
+        return { total, done };
+      }
+
+      function updateAllProgress() {
+        const pre = countTasks(PRE_TRIP_CHECKLIST, "pre");
+        const pack = countTasks(PACKING_CHECKLIST, "pack");
+        const daily = countDailyTasks();
+
+        // Pre-trip
+        const prePct =
+          pre.total > 0 ? Math.round((pre.done / pre.total) * 100) : 0;
+        const preFill = document.getElementById("preTripFill");
+        const preText = document.getElementById("preTripText");
+        const prePctEl = document.getElementById("preTripPercent");
+        const preStat = document.getElementById("preTripStat");
+        if (preFill) preFill.style.width = prePct + "%";
+        if (preText) preText.textContent = `${pre.done} of ${pre.total} tasks`;
+        if (prePctEl) prePctEl.textContent = prePct + "%";
+        if (preStat) preStat.textContent = `${pre.done}/${pre.total}`;
+
+        // Packing
+        const packPct =
+          pack.total > 0 ? Math.round((pack.done / pack.total) * 100) : 0;
+        const packFill = document.getElementById("packingFill");
+        const packText = document.getElementById("packingText");
+        const packPctEl = document.getElementById("packingPercent");
+        const packStat = document.getElementById("packingStat");
+        if (packFill) packFill.style.width = packPct + "%";
+        if (packText)
+          packText.textContent = `${pack.done} of ${pack.total} items`;
+        if (packPctEl) packPctEl.textContent = packPct + "%";
+        if (packStat) packStat.textContent = `${pack.done}/${pack.total}`;
+
+        // Daily
+        const dailyPct =
+          daily.total > 0 ? Math.round((daily.done / daily.total) * 100) : 0;
+        const dailyFill = document.getElementById("dailyFill");
+        const dailyText = document.getElementById("dailyText");
+        const dailyPctEl = document.getElementById("dailyPercent");
+        const dailyStat = document.getElementById("dailyStat");
+        if (dailyFill) dailyFill.style.width = dailyPct + "%";
+        if (dailyText)
+          dailyText.textContent = `${daily.done} of ${daily.total} tasks`;
+        if (dailyPctEl) dailyPctEl.textContent = dailyPct + "%";
+        if (dailyStat) dailyStat.textContent = `${daily.done}/${daily.total}`;
+
+        // Overall
+        const overallTotal = pre.total + pack.total + daily.total;
+        const overallDone = pre.done + pack.done + daily.done;
+        const overallPct =
+          overallTotal > 0 ? Math.round((overallDone / overallTotal) * 100) : 0;
+        const overallFill = document.getElementById("overallFill");
+        const overallText = document.getElementById("overallText");
+        const overallPctEl = document.getElementById("overallPercent");
+        if (overallFill) overallFill.style.width = overallPct + "%";
+        if (overallText)
+          overallText.textContent = `${overallDone} of ${overallTotal} tasks complete`;
+        if (overallPctEl) overallPctEl.textContent = overallPct + "%";
+      }
+
+      function updateClock() {
+        const now = new Date();
+        const h = now.getHours();
+        const m = now.getMinutes().toString().padStart(2, "0");
+        const el = document.getElementById("liveClock");
+        if (el) el.textContent = `${h}:${m}`;
+      }
+
+      // ===== INIT =====
+      renderChecklist(PRE_TRIP_CHECKLIST, "preTripList", "pre");
+      renderChecklist(PACKING_CHECKLIST, "packingList", "pack");
+      renderDays();
+      renderExpenses();
+      updateBudget();
+      updateAllProgress();
+      updateClock();
+      setInterval(updateClock, 60000);
+
+      console.log(
+        "✅ App loaded · Works offline · LocalStorage saving enabled",
+      );
+    </script>
+  </body>
+</html>
